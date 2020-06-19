@@ -6,19 +6,15 @@ const state = {
   packages: [],
   page: 1,
   maxPage: 0,
-  searchString: ''
+  searchString: '',
+  showDetail: false
 }
 
 const getters = {
-  PACKAGES: state => {
-    return state.packages
-  },
-  PAGE: state => {
-    return state.page
-  },
-  MAX_PAGE: state => {
-    return state.maxPage
-  },
+  PACKAGES: state => state.packages,
+  PAGE: state => state.page,
+  MAX_PAGE: state => state.maxPage,
+  SHOW_DETAIL: state => state.showDetail
 }
 
 const mutations = {
@@ -33,6 +29,9 @@ const mutations = {
   },
   SET_SEARCH_STRING: (state, payload) => {
     state.searchString = payload
+  },
+  SET_SHOW_DETAIL: (state, payload) => {
+    state.showDetail = payload
   }
 }
 

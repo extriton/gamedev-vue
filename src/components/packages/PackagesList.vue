@@ -23,18 +23,24 @@
             </tr>
         </tbody>
     </table>
+    <DetailModal :pkg="selectedItem" @close="hideDetail" />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import config from '@/config/config'
+import DetailModal from '@/components/packages/DetailModal.vue'
 
 export default {
   name: 'PackagesList',
+  components: {
+    DetailModal
+  },
   data () {
     return {
-      pageLimit: config.pageLimit
+      pageLimit: config.pageLimit,
+      selectedItem: null
     }
   },
   computed: {
@@ -42,8 +48,16 @@ export default {
   },
   methods: {
     onClick (item) {
-      console.log(item)
-    }
+      this.selectedItem = item
+      this.showDetail()
+    },
+    showDetail () {
+      this.SET_SHOW_DETAIL(true)
+    },
+    hideDetail () {
+      this.SET_SHOW_DETAIL(false)
+    },
+    ...mapMutations('packages', ['SET_SHOW_DETAIL']),
   }
 }
 </script>
