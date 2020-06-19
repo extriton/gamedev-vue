@@ -4,7 +4,6 @@ import axios from 'axios'
 const searchPackages = (searchString, page) => {
     return new Promise((resolve, reject) => {
         const url = `${config.npmjsAPI}?text=${searchString}&size=${config.pageLimit}&from=${ (page - 1) * config.pageLimit}`
-        console.log('url: ', url)
         axios({url: url, method: 'GET' })
             .then(async (response) => {
                 resolve(response)
