@@ -1,63 +1,127 @@
 <template>
   <div class="packages-list row mt-3">
     <div v-show="!PACKAGES.length" class="not-found ml-3">Packages no found</div>
-    <table v-show="PACKAGES.length" class="table table-bordered table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Package name</th>
-                <th scope="col">Package description</th>
-                <th scope="col">Version</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr
-                v-for="(item, index) in PACKAGES"
-                :key="index"
-                @click="onClick(item)"
-            >
-                <td>{{ (PAGE - 1) * pageLimit + index + 1 }}</td>
-                <td>{{ item.package.name }}</td>
-                <td>{{ item.package.description }}</td>
-                <td>{{ item.package.version }}</td>
-            </tr>
-        </tbody>
-    </table>
-    <DetailModal :pkg="selectedItem" @close="hideDetail" />
+      <b-table
+        v-show="PACKAGES.length"
+        :fields="fields"
+        :items="packages"
+        striped
+        bordered
+        hover
+        head-variant="dark"
+        @row-clicked="onClick"
+      >
+
+        <template v-slot:cell(index)="data">
+          {{ (PAGE - 1) * pageLimit + data.index + 1 }}
+        </template>
+
+        <template v-slot:cell(package_name)="data">
+          {{ data.item.package_name }}
+        </template>
+
+        <template v-slot:cell(package_description)="data">
+          {{ data.item.package_description }}
+        </template>
+
+        <template v-slot:cell(version)="data">
+          {{ data.item.version }}
+        </template>
+
+    </b-table>
+    <!-- Detail modal -->
+      <b-modal
+        id="package-detail-modal"
+        hide-footer
+        :title="pkg.name + ' ' + pkg.version"
+        scrollable
+      >
+        <p><b>Publisher:</b><br />
+          Username: {{ pkg.publisher.username }}<br />
+          Email: {{ pkg.publisher.email }}<br />
+        </p>
+        <p><b>Date:</b><br />{{ pkg.date | localdate }}</p>
+        <p><b>Description:</b><br />{{ pkg.description }}</p>
+        <p><b>Keywords:</b><br />
+          <span
+            v-for="(item, index) in pkg.keywords"
+            :key="'k' + index"
+          >
+            {{ item}}, 
+          </span>
+        </p>
+        <p><b>Links:</b><br />
+          <span
+            v-for="(item, index) in pkg.links"
+            :key="'l' + index"
+          >
+            {{ item}}<br />
+          </span>
+        </p>
+        <p><b>Etc...</b></p>
+        <b-button class="mt-3" variant="success" block @click="hideDetail">Close</b-button>
+      </b-modal>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 import config from '@/config/config'
-import DetailModal from '@/components/packages/DetailModal.vue'
 
 export default {
   name: 'PackagesList',
-  components: {
-    DetailModal
-  },
   data () {
     return {
       pageLimit: config.pageLimit,
-      selectedItem: null
+      pkg: {
+        name: '',
+        version: '',
+        publisher: {
+          username: '',
+          email: ''
+        },
+        date: new Date(),
+        description: '',
+        keywords: [],
+        links: []
+      },
+      fields: [
+          { key: 'index', label: '#' },
+          { key: 'package_name', label: 'Package name' },
+          { key: 'package_description', label: 'Package description' },
+          { key: 'version', label: 'Version' },
+        ],
     }
   },
   computed: {
-      ...mapGetters('packages', ['PACKAGES', 'PAGE'])
+    packages () {
+      return this.PACKAGES.map(elem => {
+        return {
+          package_name: elem.package.name,
+          package_description: elem.package.description,
+          version: elem.package.version
+        }
+      })
+    },
+    ...mapGetters('packages', ['PACKAGES', 'PAGE'])
   },
   methods: {
-    onClick (item) {
-      this.selectedItem = item
+    onClick (record) {
+      this.pkg = (this.PACKAGES.find(elem => elem.package.name === record.package_name)).package
       this.showDetail()
     },
     showDetail () {
-      this.SET_SHOW_DETAIL(true)
+      this.$bvModal.show('package-detail-modal')
     },
     hideDetail () {
-      this.SET_SHOW_DETAIL(false)
+      this.$bvModal.hide('package-detail-modal')
     },
-    ...mapMutations('packages', ['SET_SHOW_DETAIL']),
+  },
+  filters: {
+    localdate: function (value) {
+      if (!value) return ''
+      return new Date(value).toLocaleString()
+    }
   }
 }
 </script>

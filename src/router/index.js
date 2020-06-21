@@ -9,6 +9,10 @@ Vue.use(VueRouter)
     path: '/',
     name: 'HomePage',
     component: HomePage
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 

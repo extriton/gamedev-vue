@@ -4,11 +4,10 @@ import router from './router'
 import store from './store'
 
 // Import additional plugins
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import { BootstrapVue } from 'bootstrap-vue'
 
 // Install additional plugins
 Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 

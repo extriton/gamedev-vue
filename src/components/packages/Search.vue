@@ -1,21 +1,24 @@
 <template>
   <div class="search-block">
-    <form @submit.prevent="onSubmit">
-      <div class="row mt-3">
-        <div class="col-8 col-md-7 col-lg-5">
-          <input
-            id="searchString"
-            class="form-control"
-            v-model="form.searchString"
-            type="text"
-            placeholder="Search NPM packages..."
+    <b-form @submit.prevent="onSubmit">
+      <b-input-group class="mt-3">
+        <b-form-input
+          id="searchString"
+          v-model="form.searchString"
+          type="text"
+          placeholder="Search NPM packages..."
+        >
+        </b-form-input>
+        <b-input-group-append>
+          <b-button
+            type="submit"
+            variant="success"
           >
-        </div>
-        <div class="col-3 col-sm-2 col-md-1">
-          <button type="submit" class="btn btn-primary">Search</button>
-        </div>
-      </div>
-    </form>
+            Search
+          </b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </b-form>
   </div>
 </template>
 
@@ -43,9 +46,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.search-block {
-  width: 100%;
-}
-</style>
